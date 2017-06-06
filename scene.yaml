@@ -1,0 +1,66 @@
+cameras:
+    camera1:
+        type: perspective
+
+lights:
+    light1:
+        type: directional
+        direction: [0, 1, -.5]
+        diffuse: .3
+        ambient: 1
+
+sources:
+    pale:
+        type: Raster
+        url: https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png
+        max_zoom: 18
+
+    mapzen:
+        type: MVT
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.mvt
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+
+    gsi:
+        type: MVT
+        url: https://hfu.github.io/gsi-address-vt/{z}/{x}/{y}.mvt
+        max_zoom: 14
+
+    openaddress:
+        type: MVT
+        url: https://hfu.github.io/openaddress-vt/{z}/{x}/{y}.mvt
+        max_zoom: 12
+
+styles:
+    grayscale:
+        base: raster
+        shaders:
+            blocks:
+                filter: |
+                    float luma = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+                    color.rgb = vec3(luma);
+
+layers:
+    pale:
+        data: { source: pale }
+        draw:
+            grayscale:
+                color: [0.2, 0.2, 0.2]
+                order: 0
+
+    gsi-address:
+        data: { source: gsi }
+        draw:
+            points:
+                order: 1
+                size: 2px
+                color: '#00ffff'
+
+    openaddresses-jp:
+        data: { source: openaddress }
+        draw:
+            points:
+                order: 1
+                size: 2px
+                color: '#ffff00'
